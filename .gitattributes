@@ -1,0 +1,2 @@
+# Para archivos JS, usa LF en todos los sistemas
+*.js text eol=lf

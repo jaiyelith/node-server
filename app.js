@@ -1,3 +1,10 @@
-const { menu } = require('./auxiliar');
+const { menu } = require('./auxiliar/index');
 
-menu();
+const main = () => {
+  menu();
+};
+
+main();
+
+
+

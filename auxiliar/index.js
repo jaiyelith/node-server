@@ -1,11 +1,21 @@
 require('colors');
-
 const readline = require('readline');
-const { crearTarea, eliminarTarea, completarTarea, mostrarTareas } = require('./tareaFunciones');
-
+const http = require('http');
+const { crearTarea, eliminarTarea, completarTarea, mostrarTareas } = require('./auxiliar/tareaFunciones');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
+});
+
+const server = http.createServer((req, res) => {
+  if (req.url === '/tareas' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    const listaTareasJSON = JSON.stringify(listaTareas);
+    res.end(listaTareasJSON);
+  } else {
+    res.writeHead(404, { 'Content-Type': 'text/html' });
+    res.end('<h1>404 Not Found</h1>');
+  }
 });
 
 const mostrarMenu = () => {
@@ -29,7 +39,7 @@ const menu = () => {
         rl.question('Añade la tarea que desea realizar: ', async (description) => {
           try {
             await crearTarea(description);
-            console.log('\n Tarea creada existosamente!'.green);
+            console.log('\n Tarea creada exitosamente!'.green);
           } catch (error) {
             console.error(error.message.red);
           }
@@ -49,7 +59,7 @@ const menu = () => {
         rl.question('¿Qué tarea desea marcar como completa? ', async (complete) => {
           try {
             await completarTarea(complete);
-            console.log('\n Tarea completada existosamente'.green);
+            console.log('\n Tarea completada exitosamente'.green);
           } catch (error) {
             console.error(error.message.red);
           }
@@ -63,7 +73,7 @@ const menu = () => {
         rl.question('¿Qué tarea desea eliminar? ', async (eliminar) => {
           try {
             await eliminarTarea(eliminar);
-            console.log('\n Tarea eliminada existosamente'.green);
+            console.log('\n Tarea eliminada exitosamente'.green);
           } catch (error) {
             console.error(error.message.red);
           }
@@ -83,6 +93,10 @@ const menu = () => {
     }
   });
 };
+
+server.listen(3000, () => {
+  console.log('\n Servidor iniciado en http://localhost:3000'.green);
+});
 
 module.exports = {
   menu,

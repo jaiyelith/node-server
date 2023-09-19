@@ -1,73 +1,61 @@
-require('colors');
-
 const listaTareas = [
   {
-    id: 1,
-    description: 'Tarea 1',
-    complete: true,
+    descripcion: 'Hacer mercado',
+    completada: false,
+    id: '1'
   },
   {
-    id: 2,
-    description: 'Tarea 2',
-    complete: false,
+    descripcion: 'Estudiar Node.js',
+    completada: true,
+    id: '2'
   },
   {
-    id: 3,
-    description: 'Tarea 3',
-    complete: false,
+    descripcion: 'Pagar servicios',
+    completada: false,
+    id: '3'
+  },
+  {
+    descripcion: 'Hacer todas mis entregas',
+    completada: false,
+    id: '4'
   },
 ];
 
-const crearTarea = (description) => {
-  return new Promise((resolve, reject) => {
-    const tarea = {
-      id: listaTareas.length + 1,
-      description,
-      complete: false,
-    };
+function agregarTarea(descripcion, completada = false) {
+  const nuevaTarea = {
+    descripcion,
+    completada,
+    id: generarIDUnico(),
+  };
+  listaTareas.push(nuevaTarea);
+  return nuevaTarea; 
+}
 
-    listaTareas.push(tarea);
-    resolve(tarea);
-  });
-};
+function eliminarTarea(id) {
+  const index = listaTareas.findIndex((tarea) => tarea.id === id);
+  if (index !== -1) {
+    listaTareas.splice(index, 1);
+    return true;
+  }
+  return false; 
+}
 
-const eliminarTarea = (id) => {
-  return new Promise((resolve, reject) => {
-    const index = parseInt(id) - 1;
+function completarTarea(id) {
+  const tarea = listaTareas.find((t) => t.id === id);
+  if (tarea) {
+    tarea.completada = true;
+    return tarea; 
+  }
+  return null;
+}
 
-    if (index >= 0 && index < listaTareas.length) {
-      const tareaEliminada = listaTareas.splice(index, 1)[0];
-      resolve(tareaEliminada);
-    } else {
-      reject(new Error('No existe la tarea'));
-    }
-  });
-};
-
-const completarTarea = (id) => {
-  return new Promise((resolve, reject) => {
-    const index = parseInt(id) - 1;
-
-    if (index >= 0 && index < listaTareas.length) {
-      listaTareas[index].complete = true;
-      resolve(listaTareas[index]);
-    } else {
-      reject(new Error('No existe la tarea'));
-    }
-  });
-};
-
-const mostrarTareas = () => {
-  listaTareas.forEach((tarea) => {
-    console.log(
-      `${'ID:'.cyan} ${tarea.id}, ${'Descripcion:'.cyan} ${tarea.description}, ${'Completada:'.cyan} ${tarea.complete}`
-    );
-  });
-};
+function generarIDUnico() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
 
 module.exports = {
-  crearTarea,
+  listaTareas,
+  agregarTarea,
   eliminarTarea,
   completarTarea,
-  mostrarTareas,
 };
